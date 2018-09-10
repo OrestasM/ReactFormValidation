@@ -61,12 +61,17 @@ class Form extends React.Component{
 
         if(this.state.username.length < 5){
             isError=true;
-            errors.usernameError = "Username must be longer than 4 symbols"
+            errors.usernameError = "At least 5 characters long"
         }
 
         if(this.state.email.indexOf("@") === -1){
             isError=true;
             errors.emailError = "Email address must be valid"
+        }
+
+        if(this.state.password.length < 6){
+            isError = true;
+            errors.passwordError = "At least 6 characters long"
         }
 
         if(isError){
@@ -87,12 +92,13 @@ class Form extends React.Component{
         return (
             <div>
 
-                <FormControl className={classes.formControl}>
+                <FormControl>
                     <InputLabel >Username</InputLabel>
                     <Input 
                         name="username" 
                         value={this.state.username} 
                         onChange={this.stateChangeHandler} />
+                    <FormHelperText id="name-error-text">{this.state.usernameError}</FormHelperText>
                 </FormControl>
                 <br/>
                 <FormControl>
@@ -128,6 +134,7 @@ class Form extends React.Component{
                         name="password" 
                         value={this.state.password} 
                         onChange={this.stateChangeHandler} />
+                    <FormHelperText id="name-error-text">{this.state.passwordError}</FormHelperText>
                 </FormControl>
                 <br/>
                 <TextField
