@@ -7,7 +7,6 @@ import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
-import TextField from '@material-ui/core/TextField';
 
 const styles = theme => ({
   container: {
@@ -47,45 +46,63 @@ class Form extends React.Component{
             show: !showState
         })
     }
+    
+    change = e => {
+    // this.props.onChange({ [e.target.name]: e.target.value });
+    this.setState({
+        [e.target.name]: e.target.value
+    });
+    };
 
-    validate = () =>{
-        console.log("Submit pressed")
-        let isError = false;
-        const errors = {
-            firstNameError: "",
-            lastNameError: "",
-            usernameError: "",
-            emailError: "",
-            passwordError: ""
-          };
+    validate = () => {
+    let isError = false;
+    const errors = {
+        firstNameError: "",
+        lastNameError: "",
+        usernameError: "",
+        emailError: "",
+        passwordError: ""
+    };
 
-        if(this.state.username.length < 5){
-            isError=true;
-            errors.usernameError = "At least 5 characters long"
-        }
-
-        if(this.state.email.indexOf("@") === -1){
-            isError=true;
-            errors.emailError = "Email address must be valid"
-        }
-
-        if(this.state.password.length < 6){
-            isError = true;
-            errors.passwordError = "At least 6 characters long"
-        }
-
-        if(isError){
-            this.setState({
-                ...this.state,
-                ...errors
-            })
-            
-        }
-        console.log(this.state);
-        return isError;
-        
+    if (this.state.username.length < 5) {
+        isError = true;
+        errors.usernameError = "Username needs to be atleast 5 characters long";
     }
 
+    if (this.state.email.indexOf("@") === -1) {
+        isError = true;
+        errors.emailError = "Requires valid email";
+    }
+
+    this.setState({
+        ...this.state,
+        ...errors
+    });
+
+    return isError;
+    };
+
+    onSubmit = e => {
+    e.preventDefault();
+    
+    const err = this.validate();
+    if (!err) {
+        // clear form
+        this.setState({
+        firstName: "",
+        firstNameError: "",
+        lastName: "",
+        lastNameError: "",
+        username: "",
+        usernameError: "",
+        email: "",
+        emailError: "",
+        password: "",
+        passwordError: ""
+        });
+        this.props.onSubmit(this.state);
+    }
+    };
     render () {
 
         const { classes } = this.props;
@@ -137,22 +154,13 @@ class Form extends React.Component{
                     <FormHelperText id="name-error-text">{this.state.passwordError}</FormHelperText>
                 </FormControl>
                 <br/>
-                <TextField
-                    id="password-input"
-                    label="Password"
-                    className={classes.textField}
-                    type="password"
-                    autoComplete="current-password"
-                    margin="normal"
-                />
-                <br/>
                 <Button 
                     variant="contained" 
                     size="small" 
                     color="primary" 
                     className={classes.button}
                     //onClick={this.toggleHandler.bind(this)}>
-                    onClick={this.validate.bind(this)}
+                    onClick={e => this.onSubmit(e)}
                     >
                     Submit
                 </Button>
